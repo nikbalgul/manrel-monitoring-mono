@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/*.jar
+web: java -Duser.timezone=Europe/Istanbul -Dserver.port=$PORT $JAVA_OPTS -jar target/*.jar
