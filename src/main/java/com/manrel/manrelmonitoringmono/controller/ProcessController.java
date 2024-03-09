@@ -30,7 +30,6 @@ public class ProcessController {
         return new Response<>(saveResponse);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MANREL')")
     @GetMapping("/list")
     public Response<List<ProcessResponse>> get(@RequestParam String period) {
         List<ProcessResponse> processList = processService.getProcessList(period);
