@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -26,6 +27,8 @@ public class SpringSecurityConfig {
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     private final JwtAuthenticationFilter authenticationFilter;
+
+    private final LogoutHandler logoutHandler;
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -48,14 +51,11 @@ public class SpringSecurityConfig {
                     authorize.anyRequest().authenticated();
                 }).logout(logout ->
                 logout.logoutUrl("/api/v1/auth/logout")
+                        .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
         ).httpBasic(Customizer.withDefaults());
 
-        http.exceptionHandling(exception -> exception
-                .authenticationEntryPoint(authenticationEntryPoint));
-
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

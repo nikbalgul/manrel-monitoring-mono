@@ -13,4 +13,5 @@ public class AuthenticationResponse {
 
     private String accessToken;
     private String tokenType = "Bearer";
+    private UserResponse user;
 }
