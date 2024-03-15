@@ -7,6 +7,7 @@ import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.model.response.SteamResponse;
 import com.manrel.manrelmonitoringmono.service.SteamService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ public class SteamController {
     private final SteamService steamService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<SaveResponse> create(@RequestBody SteamRequest steamRequest) {
         SaveResponse saveResponse = steamService.saveOrUpdate(steamRequest);
         return new Response<>(saveResponse);
@@ -36,6 +38,7 @@ public class SteamController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<Void> delete(@RequestBody DeleteRequest request) {
         steamService.delete(request);
         return new Response<>();

@@ -7,6 +7,7 @@ import com.manrel.manrelmonitoringmono.model.response.Response;
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.service.CanteenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ public class CanteenController {
     private final CanteenService canteenService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<SaveResponse> create(@RequestBody CanteenRequest canteenRequest) {
         SaveResponse saveResponse = canteenService.saveOrUpdateCanteen(canteenRequest);
         return new Response<>(saveResponse);
@@ -36,6 +38,7 @@ public class CanteenController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<Void> delete(@RequestBody DeleteRequest request) {
         canteenService.delete(request);
         return new Response<>();

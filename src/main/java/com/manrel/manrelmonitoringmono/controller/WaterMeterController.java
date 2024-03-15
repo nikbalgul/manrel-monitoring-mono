@@ -7,6 +7,7 @@ import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.model.response.WaterMeterResponse;
 import com.manrel.manrelmonitoringmono.service.WaterMeterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ public class WaterMeterController {
     private final WaterMeterService waterMeterService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<SaveResponse> create(@RequestBody WaterMeterRequest waterMeterRequest) {
         SaveResponse saveResponse = waterMeterService.saveOrUpdate(waterMeterRequest);
         return new Response<>(saveResponse);
@@ -36,6 +38,7 @@ public class WaterMeterController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<Void> delete(@RequestBody DeleteRequest request) {
         waterMeterService.delete(request);
         return new Response<>();

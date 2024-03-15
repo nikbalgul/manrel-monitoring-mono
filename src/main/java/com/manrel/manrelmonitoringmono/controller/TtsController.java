@@ -7,6 +7,7 @@ import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.model.response.TtsResponse;
 import com.manrel.manrelmonitoringmono.service.TtsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ public class TtsController {
     private final TtsService ttsService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<SaveResponse> create(@RequestBody TtsRequest ttsRequest) {
         SaveResponse saveResponse = ttsService.saveOrUpdate(ttsRequest);
         return new Response<>(saveResponse);
@@ -36,6 +38,7 @@ public class TtsController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<Void> delete(@RequestBody DeleteRequest request) {
         ttsService.delete(request);
         return new Response<>();

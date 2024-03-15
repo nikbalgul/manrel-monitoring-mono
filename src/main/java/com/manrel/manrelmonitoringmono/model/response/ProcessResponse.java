@@ -42,4 +42,14 @@ public class ProcessResponse {
     private Double greaseCsmp;
 
     private Double greaseCsmpBar;
+
+    private Double radiantSm3;
+
+    private Double greaseM3;
+
+    private Double averageSm3;
+
+    private Double greaseSm3;
+
+    private Double totalSm3;
 }

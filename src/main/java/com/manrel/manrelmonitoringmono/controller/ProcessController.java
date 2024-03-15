@@ -7,6 +7,7 @@ import com.manrel.manrelmonitoringmono.model.response.Response;
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.service.ProcessService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ public class ProcessController {
     private final ProcessService processService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<SaveResponse> create(@RequestBody ProcessRequest processRequest) {
         SaveResponse saveResponse = processService.saveOrUpdateProcess(processRequest);
         return new Response<>(saveResponse);
@@ -36,6 +38,7 @@ public class ProcessController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<Void> delete(@RequestBody DeleteRequest processDeleteRequest) {
         processService.delete(processDeleteRequest);
         return new Response<>();

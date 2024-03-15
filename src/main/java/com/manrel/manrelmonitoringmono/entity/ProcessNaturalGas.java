@@ -77,6 +77,21 @@ public class ProcessNaturalGas implements Serializable, Auditable {
     @Column(name = "GREASE_CSMP_BAR")
     private Double greaseCsmpBar;
 
+    @Column(name = "RADIANT_SM3")
+    private Double radiantSm3;
+
+    @Column(name = "GREASE_M3")
+    private Double greaseM3;
+
+    @Column(name = "AVG_SM3")
+    private Double averageSm3;
+
+    @Column(name = "GREASE_SM3")
+    private Double greaseSm3;
+
+    @Column(name = "TOTAL_SM3")
+    private Double totalSm3;
+
     @Embedded
     private Audit audit;
 }

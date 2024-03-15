@@ -6,6 +6,7 @@ import com.manrel.manrelmonitoringmono.model.response.Response;
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.service.ChemicalSaltService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ public class ChemicalSaltController {
     private final ChemicalSaltService chemicalSaltService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<SaveResponse> create(@RequestBody ChemicalSaltRequest chemicalSaltRequest) {
         SaveResponse saveResponse = chemicalSaltService.saveOrUpdate(chemicalSaltRequest);
         return new Response<>(saveResponse);
@@ -36,6 +38,7 @@ public class ChemicalSaltController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANREL_USER')")
     public Response<Void> delete(@RequestParam Long id) {
         chemicalSaltService.delete(id);
         return new Response<>();

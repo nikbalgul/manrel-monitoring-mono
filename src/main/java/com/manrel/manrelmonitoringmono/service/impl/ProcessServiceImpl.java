@@ -83,6 +83,14 @@ public class ProcessServiceImpl implements ProcessService {
             processNaturalGas.setGreaseCsmp(greaseCsmp);
             processNaturalGas.setRadiantCsmpBar(radiantCsmpBar.doubleValue());
             processNaturalGas.setGreaseCsmpBar(greaseCsmpBar.doubleValue());
+            BigDecimal averageSm3 = BigDecimal.valueOf(processNaturalGas.getDigitalCsmp() / processNaturalGas.getMechanicCsmp()).setScale(3, RoundingMode.HALF_UP);
+            processNaturalGas.setAverageSm3(averageSm3.doubleValue());
+            processNaturalGas.setRadiantSm3(radiantCsmp * processNaturalGas.getAverageSm3());
+            processNaturalGas.setGreaseM3(processNaturalGas.getMechanicCsmp() - radiantCsmp);
+            BigDecimal greaseSm3 = BigDecimal.valueOf(processNaturalGas.getGreaseM3() * processNaturalGas.getAverageSm3()).setScale(0, RoundingMode.HALF_UP);
+            processNaturalGas.setGreaseSm3(greaseSm3.doubleValue());
+            BigDecimal totalSm3 = BigDecimal.valueOf(processNaturalGas.getGreaseSm3() + processNaturalGas.getRadiantSm3()).setScale(0, RoundingMode.HALF_UP);
+            processNaturalGas.setTotalSm3(totalSm3.doubleValue());
         }
 
         if (Objects.nonNull(previous)) {
@@ -96,6 +104,15 @@ public class ProcessServiceImpl implements ProcessService {
             previous.setGreaseCsmp(greaseCsmp);
             previous.setRadiantCsmpBar(radiantCsmpBar.doubleValue());
             previous.setGreaseCsmpBar(greaseCsmpBar.doubleValue());
+
+            BigDecimal averageSm3 = BigDecimal.valueOf(previous.getDigitalCsmp() / previous.getMechanicCsmp()).setScale(3, RoundingMode.HALF_UP);
+            previous.setAverageSm3(averageSm3.doubleValue());
+            previous.setRadiantSm3(radiantCsmp * previous.getAverageSm3());
+            previous.setGreaseM3(previous.getMechanicCsmp() - radiantCsmp);
+            BigDecimal greaseSm3 = BigDecimal.valueOf(previous.getGreaseM3() * previous.getAverageSm3()).setScale(0, RoundingMode.HALF_UP);
+            previous.setGreaseSm3(greaseSm3.doubleValue());
+            BigDecimal totalSm3 = BigDecimal.valueOf(previous.getGreaseSm3() + previous.getRadiantSm3()).setScale(0, RoundingMode.HALF_UP);
+            previous.setTotalSm3(totalSm3.doubleValue());
             savedProcessNaturalGasList.add(previous);
         }
 
@@ -128,6 +145,11 @@ public class ProcessServiceImpl implements ProcessService {
             processResponse.setGreaseCsmp(processNaturalGas.getGreaseCsmp());
             processResponse.setGreaseCsmpBar(processNaturalGas.getGreaseCsmpBar());
             processResponse.setDiffV1Mc(processNaturalGas.getDiffV1Mc());
+            processResponse.setRadiantSm3(processNaturalGas.getRadiantSm3());
+            processResponse.setGreaseM3(processNaturalGas.getGreaseM3());
+            processResponse.setGreaseSm3(processNaturalGas.getGreaseSm3());
+            processResponse.setAverageSm3(processNaturalGas.getAverageSm3());
+            processResponse.setTotalSm3(processNaturalGas.getTotalSm3());
             processResponse.setMeasuredDate(formatter.format(processNaturalGas.getMeasuredDate()));
             processResponseList.add(processResponse);
         });
