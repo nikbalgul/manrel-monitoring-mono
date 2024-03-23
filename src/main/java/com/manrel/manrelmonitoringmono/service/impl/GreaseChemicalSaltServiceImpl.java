@@ -8,6 +8,7 @@ import com.manrel.manrelmonitoringmono.model.response.GreaseChemicalSaltResponse
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.repository.GreaseChemicalSaltRepository;
 import com.manrel.manrelmonitoringmono.service.GreaseChemicalSaltService;
+import com.manrel.manrelmonitoringmono.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,10 +115,7 @@ public class GreaseChemicalSaltServiceImpl implements GreaseChemicalSaltService 
 
         Calendar cld = Calendar.getInstance();
         cld.set(Calendar.DAY_OF_MONTH, 1);
-        cld.set(Calendar.HOUR_OF_DAY, 0);
-        cld.set(Calendar.MINUTE, 0);
-        cld.set(Calendar.SECOND, 0);
-        cld.set(Calendar.MILLISECOND, 0);
+        DateUtils.setZeroTime(cld);
         if (PeriodType.UCAYLIK.equals(periodType)) {
             cld.add(Calendar.MONTH, -2);
             return cld.getTime();

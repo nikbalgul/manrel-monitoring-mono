@@ -9,6 +9,7 @@ import com.manrel.manrelmonitoringmono.model.response.ProcessResponse;
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.repository.ProcessRepository;
 import com.manrel.manrelmonitoringmono.service.ProcessService;
+import com.manrel.manrelmonitoringmono.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,7 +84,10 @@ public class ProcessServiceImpl implements ProcessService {
             processNaturalGas.setGreaseCsmp(greaseCsmp);
             processNaturalGas.setRadiantCsmpBar(radiantCsmpBar.doubleValue());
             processNaturalGas.setGreaseCsmpBar(greaseCsmpBar.doubleValue());
-            BigDecimal averageSm3 = BigDecimal.valueOf(processNaturalGas.getDigitalCsmp() / processNaturalGas.getMechanicCsmp()).setScale(3, RoundingMode.HALF_UP);
+            BigDecimal averageSm3 = BigDecimal.ZERO;
+            if (processNaturalGas.getMechanicCsmp() != 0.0) {
+                averageSm3 = BigDecimal.valueOf(processNaturalGas.getDigitalCsmp() / processNaturalGas.getMechanicCsmp()).setScale(3, RoundingMode.HALF_UP);
+            }
             processNaturalGas.setAverageSm3(averageSm3.doubleValue());
             processNaturalGas.setRadiantSm3(radiantCsmp * processNaturalGas.getAverageSm3());
             processNaturalGas.setGreaseM3(processNaturalGas.getMechanicCsmp() - radiantCsmp);
@@ -104,8 +108,10 @@ public class ProcessServiceImpl implements ProcessService {
             previous.setGreaseCsmp(greaseCsmp);
             previous.setRadiantCsmpBar(radiantCsmpBar.doubleValue());
             previous.setGreaseCsmpBar(greaseCsmpBar.doubleValue());
-
-            BigDecimal averageSm3 = BigDecimal.valueOf(previous.getDigitalCsmp() / previous.getMechanicCsmp()).setScale(3, RoundingMode.HALF_UP);
+            BigDecimal averageSm3 = BigDecimal.ZERO;
+            if (previous.getMechanicCsmp() != 0.0) {
+                averageSm3 = BigDecimal.valueOf(previous.getDigitalCsmp() / previous.getMechanicCsmp()).setScale(3, RoundingMode.HALF_UP);
+            }
             previous.setAverageSm3(averageSm3.doubleValue());
             previous.setRadiantSm3(radiantCsmp * previous.getAverageSm3());
             previous.setGreaseM3(previous.getMechanicCsmp() - radiantCsmp);
@@ -161,6 +167,7 @@ public class ProcessServiceImpl implements ProcessService {
         Calendar cld = Calendar.getInstance();
         cld.setTime(request.getMeasuredDate());
         cld.add(Calendar.DAY_OF_MONTH, -1);
+        DateUtils.setZeroTime(cld);
         ProcessNaturalGas previousProcess = processRepository.findByMeasuredDate(cld.getTime());
         processRepository.deleteById(request.getId());
         if (Objects.nonNull(previousProcess)) {
@@ -179,10 +186,7 @@ public class ProcessServiceImpl implements ProcessService {
 
         Calendar cld = Calendar.getInstance();
         cld.set(Calendar.DAY_OF_MONTH, 1);
-        cld.set(Calendar.HOUR_OF_DAY, 0);
-        cld.set(Calendar.MINUTE, 0);
-        cld.set(Calendar.SECOND, 0);
-        cld.set(Calendar.MILLISECOND, 0);
+        DateUtils.setZeroTime(cld);
         if (PeriodType.UCAYLIK.equals(periodType)) {
             cld.add(Calendar.MONTH, -2);
             return cld.getTime();

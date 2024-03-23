@@ -2,6 +2,9 @@ package com.manrel.manrelmonitoringmono.controller;
 
 import com.manrel.manrelmonitoringmono.model.request.DeleteRequest;
 import com.manrel.manrelmonitoringmono.model.request.SteamRequest;
+import com.manrel.manrelmonitoringmono.model.request.YearMonthRequest;
+import com.manrel.manrelmonitoringmono.model.response.DashboardSteamResponse;
+import com.manrel.manrelmonitoringmono.model.response.GreaseBoilerResponse;
 import com.manrel.manrelmonitoringmono.model.response.Response;
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.model.response.SteamResponse;
@@ -9,6 +12,7 @@ import com.manrel.manrelmonitoringmono.service.SteamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,5 +46,11 @@ public class SteamController {
     public Response<Void> delete(@RequestBody DeleteRequest request) {
         steamService.delete(request);
         return new Response<>();
+    }
+
+    @GetMapping("/calculate")
+    public Response<DashboardSteamResponse> calculate(@ModelAttribute YearMonthRequest request) {
+        DashboardSteamResponse steamResponse = steamService.calculate(request);
+        return new Response<>(steamResponse);
     }
 }

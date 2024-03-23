@@ -5,10 +5,13 @@ import com.manrel.manrelmonitoringmono.entity.Steam;
 import com.manrel.manrelmonitoringmono.enumaration.PeriodType;
 import com.manrel.manrelmonitoringmono.model.request.DeleteRequest;
 import com.manrel.manrelmonitoringmono.model.request.SteamRequest;
+import com.manrel.manrelmonitoringmono.model.request.YearMonthRequest;
+import com.manrel.manrelmonitoringmono.model.response.DashboardSteamResponse;
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.model.response.SteamResponse;
 import com.manrel.manrelmonitoringmono.repository.SteamRepository;
 import com.manrel.manrelmonitoringmono.service.SteamService;
+import com.manrel.manrelmonitoringmono.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,6 +126,7 @@ public class SteamServiceImpl implements SteamService {
         Calendar cld = Calendar.getInstance();
         cld.setTime(request.getMeasuredDate());
         cld.add(Calendar.DAY_OF_MONTH, -1);
+        DateUtils.setZeroTime(cld);
         Steam previousSteam = steamRepository.findByMeasuredDate(cld.getTime());
         steamRepository.deleteById(request.getId());
         if (Objects.nonNull(previousSteam)) {
@@ -138,15 +142,54 @@ public class SteamServiceImpl implements SteamService {
         }
     }
 
+    @Override
+    public DashboardSteamResponse calculate(YearMonthRequest request) {
+        int month = Integer.parseInt(request.getMonth());
+        int year = Integer.parseInt(request.getYear());
+        Calendar from = Calendar.getInstance();
+        Calendar to = Calendar.getInstance();
+        if (month != 0) {
+            from.set(Calendar.DAY_OF_MONTH, 1);
+            to.set(Calendar.DAY_OF_MONTH, to.getActualMaximum(Calendar.DAY_OF_MONTH));
+            from.set(Calendar.MONTH, month - 1);
+            to.set(Calendar.MONTH, month - 1);
+            from.set(Calendar.YEAR, year);
+            to.set(Calendar.YEAR, year);
+            DateUtils.setZeroTime(from);
+            DateUtils.setZeroTime(to);
+        } else {
+            from.set(Calendar.YEAR, year);
+            to.set(Calendar.YEAR, year);
+            from.set(Calendar.MONTH, Calendar.JANUARY);
+            to.set(Calendar.MONTH, Calendar.DECEMBER);
+            from.set(Calendar.DAY_OF_MONTH, 1);
+            to.set(Calendar.DAY_OF_MONTH, to.getActualMaximum(Calendar.DAY_OF_MONTH));
+            DateUtils.setZeroTime(from);
+            DateUtils.setZeroTime(to);
+        }
+        List<Steam> steamList = steamRepository.findByMeasuredDateBetweenOrderByMeasuredDateDesc(from.getTime(), to.getTime());
+
+        double totalMineralOilCsmp = steamList.stream().filter(m -> Objects.nonNull(m.getMineralOilCsmp())).mapToDouble(Steam::getMineralOilCsmp).sum();
+        double totalEsanjorCsmp = steamList.stream().filter(m -> Objects.nonNull(m.getEsanjorCsmp())).mapToDouble(Steam::getEsanjorCsmp).sum();
+        double totalWharfCsmp = steamList.stream().filter(m -> Objects.nonNull(m.getWharfCsmp())).mapToDouble(Steam::getWharfCsmp).sum();
+        double totalDn40Csmp = steamList.stream().filter(m -> Objects.nonNull(m.getDn40Csmp())).mapToDouble(Steam::getDn40Csmp).sum();
+        double totalDn150Csmp = steamList.stream().filter(m -> Objects.nonNull(m.getDn150Csmp())).mapToDouble(Steam::getDn150Csmp).sum();
+
+        DashboardSteamResponse dashboardSteamResponse = new DashboardSteamResponse();
+        dashboardSteamResponse.setMineralOilCsmp(totalMineralOilCsmp);
+        dashboardSteamResponse.setEsanjorCsmp(totalEsanjorCsmp);
+        dashboardSteamResponse.setWharfCsmp(totalWharfCsmp);
+        dashboardSteamResponse.setDn40Csmp(totalDn40Csmp);
+        dashboardSteamResponse.setDn150Csmp(totalDn150Csmp);
+        return dashboardSteamResponse;
+    }
+
     private java.util.Date getPeriodDate(String period) {
         PeriodType periodType = PeriodType.fromString(period);
 
         Calendar cld = Calendar.getInstance();
         cld.set(Calendar.DAY_OF_MONTH, 1);
-        cld.set(Calendar.HOUR_OF_DAY, 0);
-        cld.set(Calendar.MINUTE, 0);
-        cld.set(Calendar.SECOND, 0);
-        cld.set(Calendar.MILLISECOND, 0);
+        DateUtils.setZeroTime(cld);
         if (PeriodType.UCAYLIK.equals(periodType)) {
             cld.add(Calendar.MONTH, -2);
             return cld.getTime();
