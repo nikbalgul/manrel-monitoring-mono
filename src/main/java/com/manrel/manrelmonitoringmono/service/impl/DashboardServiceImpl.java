@@ -49,14 +49,6 @@ public class DashboardServiceImpl implements DashboardService {
         DateUtils.setZeroTime(lastDayOfYear);
         List<ProcessNaturalGas> processListOfYear = processRepository.findByMeasuredDateBetweenOrderByMeasuredDateDesc(firstDayOfYear.getTime(), lastDayOfYear.getTime());
 
-        Map<Integer, Double> mechanicMap = processListOfYear.stream()
-                .filter(p -> Objects.nonNull(p.getMechanicCsmp()))
-                .collect(Collectors.groupingBy(m -> {
-                    Calendar measuredCal = Calendar.getInstance();
-                    measuredCal.setTime(m.getMeasuredDate());
-                    return measuredCal.get(Calendar.MONTH);
-                }, Collectors.summingDouble(ProcessNaturalGas::getMechanicCsmp)));
-
         Map<Integer, Double> digitalMap = processListOfYear.stream()
                 .filter(p -> Objects.nonNull(p.getDigitalCsmp()))
                 .collect(Collectors.groupingBy(m -> {
@@ -64,6 +56,14 @@ public class DashboardServiceImpl implements DashboardService {
                     measuredCal.setTime(m.getMeasuredDate());
                     return measuredCal.get(Calendar.MONTH);
                 }, Collectors.summingDouble(ProcessNaturalGas::getDigitalCsmp)));
+
+        Map<Integer, Double> radiantMap = processListOfYear.stream()
+                .filter(p -> Objects.nonNull(p.getRadiantCsmp()))
+                .collect(Collectors.groupingBy(m -> {
+                    Calendar measuredCal = Calendar.getInstance();
+                    measuredCal.setTime(m.getMeasuredDate());
+                    return measuredCal.get(Calendar.MONTH);
+                }, Collectors.summingDouble(ProcessNaturalGas::getRadiantCsmp)));
 
         Map<Integer, Double> greaseMap = processListOfYear.stream()
                 .filter(p -> Objects.nonNull(p.getGreaseCsmp()))
@@ -74,8 +74,8 @@ public class DashboardServiceImpl implements DashboardService {
                 }, Collectors.summingDouble(ProcessNaturalGas::getGreaseCsmp)));
 
         DashboardProcessResponse dashboardProcessResponse = new DashboardProcessResponse();
-        dashboardProcessResponse.setMechanicMap(mechanicMap);
         dashboardProcessResponse.setDigitalMap(digitalMap);
+        dashboardProcessResponse.setRadiantMap(radiantMap);
         dashboardProcessResponse.setGreaseMap(greaseMap);
         return dashboardProcessResponse;
     }

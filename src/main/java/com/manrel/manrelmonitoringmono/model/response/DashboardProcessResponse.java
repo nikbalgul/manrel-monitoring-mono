@@ -10,7 +10,7 @@ import java.util.Map;
 @Getter
 public class DashboardProcessResponse {
 
-    Map<Integer, Double> mechanicMap = new HashMap<>();
     Map<Integer, Double> digitalMap = new HashMap<>();
+    Map<Integer, Double> radiantMap = new HashMap<>();
     Map<Integer, Double> greaseMap = new HashMap<>();
 }
