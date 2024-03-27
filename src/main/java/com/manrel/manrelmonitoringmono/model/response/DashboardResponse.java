@@ -9,5 +9,9 @@ public class DashboardResponse {
 
     private DashboardProcessResponse dashboardProcess;
 
+    private DashboardSteamCsmpResponse dashboardSteamCsmp;
+
+    private DashboardTtsResponse dashboardTts;
+
     private DashboardSteamResponse dashboardSteam;
 }

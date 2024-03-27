@@ -19,7 +19,9 @@ public class SteamRequest {
 
     private Double esanjor;
 
-    private Double wharf;
+    private Double oldWharf;
+
+    private Double newWharf;
 
     private Double dn40;
 

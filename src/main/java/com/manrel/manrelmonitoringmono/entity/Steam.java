@@ -41,11 +41,17 @@ public class Steam implements Serializable, Auditable {
     @Column(name = "ESANJOR_CSMP")
     private Double esanjorCsmp;
 
-    @Column(name = "WHARF")
-    private Double wharf;
+    @Column(name = "OLD_WHARF")
+    private Double oldWharf;
 
-    @Column(name = "WHARF_CSMP")
-    private Double wharfCsmp;
+    @Column(name = "OLD_WHARF_CSMP")
+    private Double oldWharfCsmp;
+
+    @Column(name = "NEW_WHARF")
+    private Double newWharf;
+
+    @Column(name = "NEW_WHARF_CSMP")
+    private Double newWharfCsmp;
 
     @Column(name = "DN40")
     private Double dn40;

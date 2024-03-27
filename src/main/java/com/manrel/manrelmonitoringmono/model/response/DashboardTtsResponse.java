@@ -8,8 +8,7 @@ import java.util.Map;
 
 @Setter
 @Getter
-public class DashboardSteamResponse {
+public class DashboardTtsResponse {
 
-    Map<Integer, Double> steamCsmpMap = new HashMap<>();
-    Map<Integer, Double> steamGnrtMap = new HashMap<>();
+    Map<Integer, Double> ttsMap = new HashMap<>();
 }

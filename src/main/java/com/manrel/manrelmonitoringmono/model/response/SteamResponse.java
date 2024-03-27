@@ -19,9 +19,13 @@ public class SteamResponse {
 
     private Double esanjorCsmp;
 
-    private Double wharf;
+    private Double oldWharf;
 
-    private Double wharfCsmp;
+    private Double oldWharfCsmp;
+
+    private Double newWharf;
+
+    private Double newWharfCsmp;
 
     private Double dn40;
 

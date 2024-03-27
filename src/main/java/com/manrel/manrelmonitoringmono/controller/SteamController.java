@@ -3,8 +3,7 @@ package com.manrel.manrelmonitoringmono.controller;
 import com.manrel.manrelmonitoringmono.model.request.DeleteRequest;
 import com.manrel.manrelmonitoringmono.model.request.SteamRequest;
 import com.manrel.manrelmonitoringmono.model.request.YearMonthRequest;
-import com.manrel.manrelmonitoringmono.model.response.DashboardSteamResponse;
-import com.manrel.manrelmonitoringmono.model.response.GreaseBoilerResponse;
+import com.manrel.manrelmonitoringmono.model.response.DashboardSteamCsmpResponse;
 import com.manrel.manrelmonitoringmono.model.response.Response;
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.model.response.SteamResponse;
@@ -49,8 +48,8 @@ public class SteamController {
     }
 
     @GetMapping("/calculate")
-    public Response<DashboardSteamResponse> calculate(@ModelAttribute YearMonthRequest request) {
-        DashboardSteamResponse steamResponse = steamService.calculate(request);
+    public Response<DashboardSteamCsmpResponse> calculate(@ModelAttribute YearMonthRequest request) {
+        DashboardSteamCsmpResponse steamResponse = steamService.calculate(request);
         return new Response<>(steamResponse);
     }
 }

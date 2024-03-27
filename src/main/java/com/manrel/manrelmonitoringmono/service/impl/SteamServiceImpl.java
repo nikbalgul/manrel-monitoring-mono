@@ -6,7 +6,7 @@ import com.manrel.manrelmonitoringmono.enumaration.PeriodType;
 import com.manrel.manrelmonitoringmono.model.request.DeleteRequest;
 import com.manrel.manrelmonitoringmono.model.request.SteamRequest;
 import com.manrel.manrelmonitoringmono.model.request.YearMonthRequest;
-import com.manrel.manrelmonitoringmono.model.response.DashboardSteamResponse;
+import com.manrel.manrelmonitoringmono.model.response.DashboardSteamCsmpResponse;
 import com.manrel.manrelmonitoringmono.model.response.SaveResponse;
 import com.manrel.manrelmonitoringmono.model.response.SteamResponse;
 import com.manrel.manrelmonitoringmono.repository.SteamRepository;
@@ -52,7 +52,8 @@ public class SteamServiceImpl implements SteamService {
         steam.setMeasuredDate(steamRequest.getMeasuredDate());
         steam.setMineralOil(steamRequest.getMineralOil());
         steam.setEsanjor(steamRequest.getEsanjor());
-        steam.setWharf(steamRequest.getWharf());
+        steam.setOldWharf(steamRequest.getOldWharf());
+        steam.setNewWharf(steamRequest.getNewWharf());
         steam.setDn40(steamRequest.getDn40());
         steam.setDn150(steamRequest.getDn150());
 
@@ -67,25 +68,26 @@ public class SteamServiceImpl implements SteamService {
         if (Objects.nonNull(next)) {
             steam.setMineralOilCsmp(next.getMineralOil() - steam.getMineralOil());
             steam.setEsanjorCsmp(next.getEsanjor() - steam.getEsanjor());
-            steam.setWharfCsmp(next.getWharf() - steam.getWharf());
+            steam.setOldWharfCsmp(next.getOldWharf() - steam.getOldWharf());
+            steam.setNewWharfCsmp(next.getNewWharf() - steam.getNewWharf());
             steam.setDn40Csmp(next.getDn40() - steam.getDn40());
             steam.setDn150Csmp(next.getDn150() - steam.getDn150());
             steam.setSumDn40Dn150(steam.getDn40() + steam.getDn150());
             steam.setSumCsmpDn40Dn150(steam.getDn40Csmp() + steam.getDn150Csmp());
-            steam.setSumCsmp(steam.getMineralOilCsmp() + steam.getEsanjorCsmp() + steam.getWharfCsmp() + steam.getSumCsmpDn40Dn150());
-
+            steam.setSumCsmp(steam.getMineralOilCsmp() + steam.getEsanjorCsmp() + steam.getNewWharfCsmp() + steam.getSumCsmpDn40Dn150());
         }
 
         List<Steam> savedSteamList = new ArrayList<>();
         if (Objects.nonNull(previous)) {
             previous.setMineralOilCsmp(steamRequest.getMineralOil() - previous.getMineralOil());
             previous.setEsanjorCsmp(steamRequest.getEsanjor() - previous.getEsanjor());
-            previous.setWharfCsmp(steamRequest.getWharf() - previous.getWharf());
+            previous.setOldWharfCsmp(steamRequest.getOldWharf() - previous.getOldWharf());
+            previous.setNewWharfCsmp(steamRequest.getNewWharf() - previous.getNewWharf());
             previous.setDn40Csmp(steamRequest.getDn40() - previous.getDn40());
             previous.setDn150Csmp(steamRequest.getDn150() - previous.getDn150());
             previous.setSumDn40Dn150(previous.getDn40() + previous.getDn150());
             previous.setSumCsmpDn40Dn150(previous.getDn40Csmp() + previous.getDn150Csmp());
-            previous.setSumCsmp(previous.getMineralOilCsmp() + previous.getEsanjorCsmp() + previous.getWharfCsmp() + previous.getSumCsmpDn40Dn150());
+            previous.setSumCsmp(previous.getMineralOilCsmp() + previous.getEsanjorCsmp() + previous.getNewWharfCsmp() + previous.getSumCsmpDn40Dn150());
             savedSteamList.add(previous);
         }
 
@@ -106,8 +108,10 @@ public class SteamServiceImpl implements SteamService {
             steamResponse.setMineralOilCsmp(steam.getMineralOilCsmp());
             steamResponse.setEsanjor(steam.getEsanjor());
             steamResponse.setEsanjorCsmp(steam.getEsanjorCsmp());
-            steamResponse.setWharf(steam.getWharf());
-            steamResponse.setWharfCsmp(steam.getWharfCsmp());
+            steamResponse.setOldWharf(steam.getOldWharf());
+            steamResponse.setOldWharfCsmp(steam.getOldWharfCsmp());
+            steamResponse.setNewWharf(steam.getNewWharf());
+            steamResponse.setNewWharfCsmp(steam.getNewWharfCsmp());
             steamResponse.setDn40(steam.getDn40());
             steamResponse.setDn40Csmp(steam.getDn40Csmp());
             steamResponse.setDn150(steam.getDn150());
@@ -132,7 +136,8 @@ public class SteamServiceImpl implements SteamService {
         if (Objects.nonNull(previousSteam)) {
             previousSteam.setMineralOilCsmp(null);
             previousSteam.setEsanjorCsmp(null);
-            previousSteam.setWharfCsmp(null);
+            previousSteam.setOldWharfCsmp(null);
+            previousSteam.setNewWharfCsmp(null);
             previousSteam.setDn40Csmp(null);
             previousSteam.setDn150Csmp(null);
             previousSteam.setSumDn40Dn150(null);
@@ -143,7 +148,7 @@ public class SteamServiceImpl implements SteamService {
     }
 
     @Override
-    public DashboardSteamResponse calculate(YearMonthRequest request) {
+    public DashboardSteamCsmpResponse calculate(YearMonthRequest request) {
         int month = Integer.parseInt(request.getMonth());
         int year = Integer.parseInt(request.getYear());
         Calendar from = Calendar.getInstance();
@@ -171,14 +176,14 @@ public class SteamServiceImpl implements SteamService {
 
         double totalMineralOilCsmp = steamList.stream().filter(m -> Objects.nonNull(m.getMineralOilCsmp())).mapToDouble(Steam::getMineralOilCsmp).sum();
         double totalEsanjorCsmp = steamList.stream().filter(m -> Objects.nonNull(m.getEsanjorCsmp())).mapToDouble(Steam::getEsanjorCsmp).sum();
-        double totalWharfCsmp = steamList.stream().filter(m -> Objects.nonNull(m.getWharfCsmp())).mapToDouble(Steam::getWharfCsmp).sum();
+        double totalNewWharfCsmp = steamList.stream().filter(m -> Objects.nonNull(m.getNewWharfCsmp())).mapToDouble(Steam::getNewWharfCsmp).sum();
         double totalDn40Csmp = steamList.stream().filter(m -> Objects.nonNull(m.getDn40Csmp())).mapToDouble(Steam::getDn40Csmp).sum();
         double totalDn150Csmp = steamList.stream().filter(m -> Objects.nonNull(m.getDn150Csmp())).mapToDouble(Steam::getDn150Csmp).sum();
 
-        DashboardSteamResponse dashboardSteamResponse = new DashboardSteamResponse();
+        DashboardSteamCsmpResponse dashboardSteamResponse = new DashboardSteamCsmpResponse();
         dashboardSteamResponse.setMineralOilCsmp(totalMineralOilCsmp);
         dashboardSteamResponse.setEsanjorCsmp(totalEsanjorCsmp);
-        dashboardSteamResponse.setWharfCsmp(totalWharfCsmp);
+        dashboardSteamResponse.setWharfCsmp(totalNewWharfCsmp);
         dashboardSteamResponse.setDn40Csmp(totalDn40Csmp);
         dashboardSteamResponse.setDn150Csmp(totalDn150Csmp);
         return dashboardSteamResponse;
